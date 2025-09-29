@@ -9,36 +9,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 
-public class CurrencyConversionService {
+public interface CurrencyConversionService {
 
-    private final ExchangeRateClient client = new ExchangeRateClient();
-    private final CurrencyFactory factory = new CurrencyFactory(client);
-
-    private final Map<String, BigDecimal> cache = new ConcurrentHashMap<>();
-
-    public BigDecimal convertToBRL(String rawValue) throws Exception {
-        CurrencyStrategy strategy = factory.getStrategy(rawValue);
-
-        String currencyCode = rawValue.startsWith("US$") ? "USD"
-                : rawValue.startsWith("£") ? "GBP"
-                : rawValue.startsWith("EUR") ? "EUR"
-                : "BRL";
-
-        if ("BRL".equals(currencyCode)) {
-            return strategy.convertToBRL(rawValue);
-        }
-
-        String cacheKey = currencyCode + "->BRL";
-        BigDecimal rate = cache.computeIfAbsent(cacheKey, key -> {
-            try {
-                return client.getRate(currencyCode, "BRL");
-            } catch (Exception e) {
-                throw new RuntimeException("Falha ao buscar taxa: " + e.getMessage(), e);
-            }
-        });
-
-        BigDecimal amount = new BigDecimal(rawValue.replaceAll("[^0-9.,]", "").trim());
-        return amount.multiply(rate);
-    }
+    public BigDecimal convertToBRL(String rawValue) throws Exception;
 
 }

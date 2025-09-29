@@ -19,7 +19,7 @@ public class CurrencyFactory {
         strategies.put("US$", () -> new USDStrategy(client));
         strategies.put("£",   () -> new GBPStrategy(client));
         strategies.put("EUR", () -> new EURStrategy(client));
-        strategies.put("R$",  BRLStrategy::new); // não precisa de client
+        strategies.put("R$",  BRLStrategy::new);
     }
 
     public CurrencyStrategy getStrategy(String rawValue) {
